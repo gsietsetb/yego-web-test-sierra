@@ -1,9 +1,11 @@
 {
   "name": "ws-backend",
   "module": "index.ts",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "bun index.ts"
+    "start": "bun index.ts",
+    "freshStart": "NODE_OPTIONS=--openssl-legacy-provider npm run start"
   },
   "devDependencies": {
     "@types/bun": "latest"
