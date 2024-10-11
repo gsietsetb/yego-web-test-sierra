@@ -14,11 +14,12 @@ export const Pill = ({
   className?: string;
 }) => {
   return (
-    <div
-      className={`rounded-full bg-${bgColor} text-${textColor} px-2 py-1 text-xs ${className}`}
+    <span
+      style={{ color: textColor, backgroundColor: bgColor }}
+      className={`rounded-full bg-${bgColor} px-2 py-1 text-xs ${className}`}
     >
       {label}
       {children}
-    </div>
+    </span>
   );
 };

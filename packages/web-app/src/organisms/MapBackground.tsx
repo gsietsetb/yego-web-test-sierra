@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { Vehicle } from "ws-backend/types/vehicle.ts";
 import barcelonaArea from "../assets/zones/barcelona.json";
 import { yColors } from "../theme/colors.tsx";
+
 //mapboxgl.accessToken = import.meta.env.MAPBOX_API_KEY;
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZ3VpZ3VpbGxlIiwiYSI6ImNtMHdrcjV4ZTAzMG8yaXF2ZnVjbGtpbWkifQ.JOqHUo__6O4vi7K_L8kajQ";
+
 const barcelonaCoordinates = [41.390205, 2.154007];
 
 type MapType = mapboxgl.Map & {
@@ -20,16 +22,14 @@ export function MapBackground({
   vehicles: Vehicle[];
   onSelect: (vehicle: Vehicle) => void;
 }) {
-  const mapContainer = useRef<HTMLDivElement>();
-  const map = useRef<MapType>();
-  const [zoom] = useState(12);
-  const markers = useRef<mapboxgl.Marker[]>([]);
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const map = useRef<MapType | null>(null);
+  const markers = useRef<Record<string, mapboxgl.Marker>>({});
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   useEffect(() => {
     if (!map.current) {
-      map.current = initializeMap(
-        mapContainer.current || document.createElement("div"),
-      );
+      map.current = initializeMap(mapContainer.current!);
     }
 
     if (map.current) {
@@ -43,40 +43,35 @@ export function MapBackground({
         }),
       );
     }
-  }, [zoom]);
+  }, []);
 
   useEffect(() => {
     if (!map.current || !vehicles.length) return;
-    else {
-      vehicles.forEach((vehicle: Vehicle) => {
-        const markerId = vehicle.id;
 
-        if (markers.current[markerId]) {
-          markers.current[markerId].setLngLat([vehicle.lng, vehicle.lat]);
-        } else {
-          const el = document.createElement("div");
-          el.style.backgroundImage = `url(/assets/marker-${vehicle.status.toLowerCase()}.png)`;
-          el.style.width = "40px";
-          el.style.height = "40px";
-          el.style.backgroundSize = "100%";
+    vehicles.forEach((vehicle) => {
+      const markerId = vehicle.id;
 
-          if (map.current) {
-            const marker = new mapboxgl.Marker(el)
-              .setLngLat([vehicle.lng, vehicle.lat])
-              .addTo(map.current);
+      if (markers.current[markerId]) {
+        markers.current[markerId].setLngLat([vehicle.lng, vehicle.lat]);
+      } else {
+        const isVehicleSelected = selectedVehicle?.id === vehicle.id;
+        const el = document.createElement("div");
+        el.style.backgroundImage = `url(/assets/marker-${vehicle.status.toLowerCase()}${isVehicleSelected ? "" : "-unselected"}.png)`;
+        el.style.width = isVehicleSelected ? "32px" : "18px";
+        el.style.height = isVehicleSelected ? "38px" : "18px";
+        el.style.backgroundSize = "100%";
 
-            // Guardamos el marcador en la referencia para futuras actualizaciones
-            markers.current[markerId] = marker;
-
-            // Añadimos evento de clic al marcador
-            marker.getElement().addEventListener("click", () => {
-              onSelect(vehicle);
-            });
-          }
-        }
-      });
-    }
-  }, [vehicles, onSelect]);
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([vehicle.lng, vehicle.lat])
+          .addTo(map.current!);
+        markers.current[markerId] = marker;
+        marker.getElement().addEventListener("click", () => {
+          onSelect(vehicle);
+          setSelectedVehicle(vehicle);
+        });
+      }
+    });
+  }, [vehicles, onSelect, selectedVehicle]); // Dependencias actualizadas para manejar el estado del marcador seleccionado
 
   return (
     <div className="App">

@@ -32,7 +32,7 @@ export const vehicleColor: Record<
   Vehicle["status"],
   { text: string; bg: string }
 > = {
-  AVAILABLE: { text: yColors.primary.green, bg: yColors.primary.green },
+  AVAILABLE: { text: yColors.primary.green, bg: yColors.status.success.subtle },
   DISABLED: {
     bg: yColors.status.danger.subtle,
     text: yColors.status.danger.red,

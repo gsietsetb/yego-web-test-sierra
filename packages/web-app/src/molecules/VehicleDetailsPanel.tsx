@@ -7,11 +7,13 @@ export function VehicleDetails({ vehicle }: { vehicle: Vehicle }) {
   return (
     <div
       className={
-        "sm:rounded-md sm:w-96 w-full absolute sm:relative bottom-0 sm:mx-12 sm:my-6 sm:bg-bg_secondary rounded-2xl border-gray-400 sm:p-2"
+        "sm:rounded-md sm:w-96 w-full absolute sm:relative bottom-0 sm:mx-12 sm:my-6 sm:bg-bg_secondary shadow-md rounded-2xl border-gray-400 sm:p-2"
       }
     >
-      <div className={"bg-white rounded-md p-2 gap-2"}>
-        <div className={"bg-white gap-2 flex flex-row mb-4"}>
+      <div
+        className={"bg-white sm:rounded-md p-3 gap-2 shadow-md rounded-t-2xl "}
+      >
+        <div className={"bg-white gap-4 flex flex-row mb-4"}>
           <img
             src={"/assets/scooter-illustration.png"}
             alt={vehicle.name}
@@ -19,39 +21,30 @@ export function VehicleDetails({ vehicle }: { vehicle: Vehicle }) {
           />
           <div
             className={
-              "flex flex-col items-start justify-center text-lg font-semibold capitalize text-text_primary gap-2"
+              "flex flex-col items-start justify-start text-lg font-semibold capitalize text-text_primary gap-2"
             }
           >
             <span>{vehicle.name}</span>
             <Pill
               bgColor={vehicleColor[vehicle.status].bg}
               textColor={vehicleColor[vehicle.status].text}
-              label={vehicle.status}
-            ></Pill>
-            <div
-              className={
-                "bg-primary lowercase px-2 py-1 rounded-full text-white text-xs"
-              }
-              style={{
-                backgroundColor: vehicleColor[vehicle.status].bg,
-              }}
-            >
-              {vehicle.status}
-            </div>
-            <div
-              className={"bg-primary rounded-full px-2 py-1 text-white text-xs"}
-            >
-              {percentFormat(vehicle.battery)}%
-            </div>
+              label={vehicle.status.toLowerCase()}
+            />
           </div>
         </div>
         <hr />
-        <div className={"w-full flex flex-row justify-between sm:flex-row"}>
-          <p className={"flex text-text_primary gap-2"}>
+        <div
+          className={
+            "w-full py-2 sm:pt-3 mb-2 sm:mb-0 flex flex-row justify-between sm:flex-col"
+          }
+        >
+          <p className={"flex text-text_primary gap-2 w-full"}>
             Plate:
             <strong className={"ml-2 uppercase"}>{vehicle.plate_number}</strong>
           </p>
-          <p className={"flex text-text_primary"}>
+          <p
+            className={"flex font-inter text-text_primary justify-start w-full"}
+          >
             Battery:
             <strong className={" ml-2"}>
               {percentFormat(vehicle.battery)}
