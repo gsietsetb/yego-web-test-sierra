@@ -80,8 +80,12 @@ function App() {
           <>
             <Search onSearch={handleSearch} />
             {filteredVehicles.length > 0 && (
-              <span className={"flex-row flex"}>
-                {"Vehicles: " + filteredVehicles.length}
+              <span
+                className={
+                  " font-inter text-sm font-light text-gray-400 flex-row flex"
+                }
+              >
+                {filteredVehicles.length} vehículos
               </span>
             )}
           </>

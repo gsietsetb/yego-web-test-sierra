@@ -26,7 +26,7 @@ export const NavBar = ({ children }: { children: React.ReactElement }) => {
         </div>
         {children}
       </div>
-      <CiMenuBurger className={"sm:hidden"} />
+      <CiMenuBurger size={28} className={"sm:hidden"} />
     </div>
   );
 };

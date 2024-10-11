@@ -4,7 +4,8 @@ import { Vehicle } from "ws-backend/types/vehicle.ts";
 import barcelonaArea from "../assets/zones/barcelona.json";
 import { yColors } from "../theme/colors.tsx";
 
-//mapboxgl.accessToken = import.meta.env.MAPBOX_API_KEY;
+// For any reason, the import.meta.env.MAPBOX_API_KEY is not working
+// mapboxgl.accessToken = import.meta.env.MAPBOX_API_KEY;
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZ3VpZ3VpbGxlIiwiYSI6ImNtMHdrcjV4ZTAzMG8yaXF2ZnVjbGtpbWkifQ.JOqHUo__6O4vi7K_L8kajQ";
 
@@ -48,6 +49,13 @@ export function MapBackground({
   useEffect(() => {
     if (!map.current || !vehicles.length) return;
 
+    Object.keys(markers.current).forEach((markerId) => {
+      if (!vehicles.find((v) => v.id.toString() === markerId)) {
+        markers.current[markerId].remove();
+        delete markers.current[markerId];
+      }
+    });
+
     vehicles.forEach((vehicle) => {
       const markerId = vehicle.id;
 
@@ -71,7 +79,7 @@ export function MapBackground({
         });
       }
     });
-  }, [vehicles, onSelect, selectedVehicle]); // Dependencias actualizadas para manejar el estado del marcador seleccionado
+  }, [vehicles, onSelect, selectedVehicle]);
 
   return (
     <div className="App">
@@ -111,8 +119,6 @@ function initializeMap(containerId: HTMLDivElement) {
 
   return Object.assign(map, {
     markers: {} as Record<string, mapboxgl.Marker>,
-    // On the React side we'll replace this function with
-    // the callback from the component properties
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onMarkerClick: (_marker: mapboxgl.Marker, _vehicle: Vehicle) => {},
   });
